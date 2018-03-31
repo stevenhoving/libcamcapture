@@ -20,13 +20,4 @@
  */
 #pragma once
 
-#include "libcamcapture/capture_sample_fwd.h"
-
-class icapture_source
-{
-public:
-    virtual ~icapture_source() = default;
-    virtual bool capture_frame(capture_sample &sample) const = 0;
-    virtual int width() const = 0;
-    virtual int height() const = 0;
-};
+class capture_sample;

@@ -19,3 +19,29 @@
  * SOFTWARE.
  */
 #pragma once
+
+#include "libcamcapture/icapture_source.h"
+
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
+#include <windows.h>
+
+class gdi_capture_source : public icapture_source
+{
+public:
+    explicit gdi_capture_source(HWND hwnd);
+    ~gdi_capture_source() override;
+    bool capture_frame(capture_sample &sample) const override;
+    int width() const noexcept override;
+    int height() const noexcept override;
+private:
+    BITMAPINFOHEADER bitmap_info_;
+    HBITMAP bitmap_frame_;
+    HWND hwnd_;
+    HDC desktop_dc_;
+    HDC memory_dc_;
+    int width_;
+    int height_;
+    int x_;
+    int y_;
+};

@@ -20,13 +20,45 @@
  */
 #pragma once
 
-#include "libcamcapture/capture_sample_fwd.h"
+#include <vector>
+#include <cstdint>
+#include <cassert>
 
-class icapture_source
+class capture_sample
 {
 public:
-    virtual ~icapture_source() = default;
-    virtual bool capture_frame(capture_sample &sample) const = 0;
-    virtual int width() const = 0;
-    virtual int height() const = 0;
+    explicit capture_sample(int width, int height, int bpp)
+        : width_(width)
+        , height_(height)
+        , bpp_(bpp)
+        , buffer_(width_* height_ * (bpp_ / 8))
+    {
+        assert(bpp_ % 8 == 0);
+    }
+
+    uint8_t *data() const noexcept
+    {
+        return const_cast<uint8_t *>(buffer_.data());
+    }
+
+    int width() const noexcept
+    {
+        return width_;
+    }
+
+    int height() const noexcept
+    {
+        return height_;
+    }
+
+    int bpp() const noexcept
+    {
+        return bpp_;
+    }
+
+private:
+    int width_;
+    int height_;
+    int bpp_;
+    std::vector<uint8_t> buffer_;
 };
