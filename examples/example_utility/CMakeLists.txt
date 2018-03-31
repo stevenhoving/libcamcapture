@@ -18,51 +18,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.10)
-
-project(libcamcapture)
-
-if(NOT DEFINED MSVC)
-  message(FATAL_ERROR "libcamcapture currently only builds with visual studio 2017 for now.")
-endif()
-
-set(CMAKE_CXX_STANDARD 17)
-
-add_compile_options(/WX) # treat warnings as errors.
-add_compile_options(/permissive-) # vs conformance mode.
-add_compile_options(/Zc:twoPhase-) # 2 phase name lookup.
-
-###############################################################################
-
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-###############################################################################
-
-set(LIB_CAM_CAPTURE_SOURCE
-    include/libcamcapture/libcamcapture.h
-    include/libcamcapture/icapture_source.h
-    include/libcamcapture/gdi_capture_source.h
-    include/libcamcapture/capture_sample.h
-    include/libcamcapture/capture_sample_fwd.h
-    src/gdi_capture_source.cpp
+set(EXAMPLE_UTILITY_SOURCE
+    include/example_utility/bmp.h
+    src/bmp.cpp
 )
 
-source_group(libcamcapture FILES
-    ${LIB_CAM_CAPTURE_SOURCE}
+source_group(example_utility FILES
+    ${EXAMPLE_UTILITY_SOURCE}
 )
 
-add_library(libcamcapture STATIC
-    ${LIB_CAM_CAPTURE_SOURCE}
+add_library(example_utility STATIC
+    ${EXAMPLE_UTILITY_SOURCE}
 )
 
-target_include_directories(libcamcapture
+target_include_directories(example_utility
   PUBLIC
     include
+)
+
+target_link_libraries(example_utility
+    libcamcapture
 )
 
 install(
     DIRECTORY include
     DESTINATION include
 )
-
-add_subdirectory(examples)

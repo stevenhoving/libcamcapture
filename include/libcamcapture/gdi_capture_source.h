@@ -34,6 +34,7 @@ public:
     bool capture_frame(capture_sample &sample) const override;
     int width() const noexcept override;
     int height() const noexcept override;
+    int bpp() const noexcept override;
 private:
     BITMAPINFOHEADER bitmap_info_;
     HBITMAP bitmap_frame_;

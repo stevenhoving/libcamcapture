@@ -18,16 +18,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#pragma once
 
-#include "libcamcapture/capture_sample_fwd.h"
+#include <libcamcapture/libcamcapture.h>
+#include <example_utility/bmp.h>
 
-class icapture_source
+int main(int /*argc*/, char ** /*argv*/)
 {
-public:
-    virtual ~icapture_source() = default;
-    virtual bool capture_frame(capture_sample &sample) const = 0;
-    virtual int width() const = 0;
-    virtual int height() const = 0;
-    virtual int bpp() const = 0;
-};
+    HWND hwnd = 0; // hwnd 0 means 'capture entire desktop'.
+    gdi_capture_source source(hwnd);
+    capture_sample sample(source.width(), source.height(), source.bpp());
+    source.capture_frame(sample);
+    example_utility::save_bmp(sample, "example.bmp");
+
+    return 0;
+}

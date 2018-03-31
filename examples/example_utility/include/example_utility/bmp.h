@@ -20,14 +20,11 @@
  */
 #pragma once
 
-#include "libcamcapture/capture_sample_fwd.h"
+#include <libcamcapture/capture_sample_fwd.h>
 
-class icapture_source
+namespace example_utility
 {
-public:
-    virtual ~icapture_source() = default;
-    virtual bool capture_frame(capture_sample &sample) const = 0;
-    virtual int width() const = 0;
-    virtual int height() const = 0;
-    virtual int bpp() const = 0;
-};
+int align_up(int size, int align);
+void save_bmp(const capture_sample &sample, const char *filename);
+
+} // namespace example_utility

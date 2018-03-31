@@ -22,6 +22,8 @@
 #include "libcamcapture/gdi_capture_source.h"
 #include "libcamcapture/capture_sample.h"
 
+constexpr int GDI_CAPTURE_BPP = 32;
+
 gdi_capture_source::gdi_capture_source(HWND hwnd)
     : bitmap_info_({})
     , bitmap_frame_{ nullptr }
@@ -58,7 +60,7 @@ gdi_capture_source::gdi_capture_source(HWND hwnd)
     bitmap_info_.biWidth = width_;
     bitmap_info_.biHeight = height_;
     bitmap_info_.biPlanes = 1;
-    bitmap_info_.biBitCount = 32;
+    bitmap_info_.biBitCount = GDI_CAPTURE_BPP;
     bitmap_info_.biCompression = BI_RGB;
     bitmap_info_.biSizeImage = 0;
     bitmap_info_.biXPelsPerMeter = 0;
@@ -77,7 +79,7 @@ bool gdi_capture_source::capture_frame(capture_sample &sample) const
 {
     assert(width_ == sample.width()
         && height_ == sample.height()
-        && sample.bpp() == 32);
+        && sample.bpp() == GDI_CAPTURE_BPP);
 
     const auto previous_object = ::SelectObject(memory_dc_, bitmap_frame_);
 
@@ -122,4 +124,9 @@ int gdi_capture_source::width() const noexcept
 int gdi_capture_source::height() const noexcept
 {
     return height_;
+}
+
+int gdi_capture_source::bpp() const noexcept
+{
+    return GDI_CAPTURE_BPP;
 }
