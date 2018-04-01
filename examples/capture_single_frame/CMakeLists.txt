@@ -18,8 +18,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+configure_file(capture_single_frame.manifest.in capture_single_frame.manifest)
 add_executable(capture_single_frame
     main.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/capture_single_frame.manifest
 )
 
 target_include_directories(capture_single_frame

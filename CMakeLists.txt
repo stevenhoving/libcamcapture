@@ -22,7 +22,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(libcamcapture)
 
-if(NOT DEFINED MSVC)
+if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1910)
   message(FATAL_ERROR "libcamcapture currently only builds with visual studio 2017 for now.")
 endif()
 
