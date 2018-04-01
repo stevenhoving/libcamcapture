@@ -35,7 +35,7 @@ gdi_capture_source::gdi_capture_source(HWND hwnd)
     , x_{ 0 }
     , y_{ 0 }
 {
-    if (hwnd == nullptr)
+    if (hwnd == 0)
     {
         width_ = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
         height_ = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
