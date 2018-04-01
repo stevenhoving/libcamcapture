@@ -36,6 +36,7 @@ public:
     int height() const noexcept override;
     int bpp() const noexcept override;
 private:
+    void _draw_cursor() const;
     BITMAPINFOHEADER bitmap_info_;
     HBITMAP bitmap_frame_;
     HWND hwnd_;
@@ -45,4 +46,5 @@ private:
     int height_;
     int x_;
     int y_;
+    bool show_cursor_;
 };

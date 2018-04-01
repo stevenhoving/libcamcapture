@@ -25,15 +25,16 @@
 constexpr int GDI_CAPTURE_BPP = 32;
 
 gdi_capture_source::gdi_capture_source(HWND hwnd)
-    : bitmap_info_({})
+    : bitmap_info_{}
     , bitmap_frame_{ nullptr }
-    , hwnd_(hwnd)
+    , hwnd_{ hwnd }
     , desktop_dc_{ ::GetDC(hwnd_) }
     , memory_dc_{ ::CreateCompatibleDC(desktop_dc_) }
     , width_{ 0 }
     , height_{ 0 }
     , x_{ 0 }
     , y_{ 0 }
+    , show_cursor_{ true }
 {
     if (hwnd == 0)
     {
@@ -83,12 +84,20 @@ bool gdi_capture_source::capture_frame(capture_sample &sample) const
 
     const auto previous_object = ::SelectObject(memory_dc_, bitmap_frame_);
 
-    BOOL b = ::BitBlt(memory_dc_,
+    BOOL blit_ret = ::BitBlt(memory_dc_,
         0, 0, width_, height_,
         desktop_dc_,
         x_, y_,
         SRCCOPY | CAPTUREBLT);
-    assert(b);
+
+    if (!blit_ret)
+    {
+        ::SelectObject(memory_dc_, previous_object);
+        return false;
+    }
+
+    if (show_cursor_)
+        _draw_cursor();
 
     ::SelectObject(memory_dc_, previous_object);
 
@@ -129,4 +138,37 @@ int gdi_capture_source::height() const noexcept
 int gdi_capture_source::bpp() const noexcept
 {
     return GDI_CAPTURE_BPP;
+}
+
+void gdi_capture_source::_draw_cursor() const
+{
+    CURSORINFO cursor_info = {};
+    cursor_info.cbSize = sizeof(CURSORINFO);
+
+    BOOL ret = ::GetCursorInfo(&cursor_info);
+    if (!ret)
+        return;
+
+    if (!(cursor_info.flags & CURSOR_SHOWING))
+        return;
+
+    ICONINFO icon_info;
+    ::GetIconInfo(cursor_info.hCursor, &icon_info);
+
+    auto cursor_x = cursor_info.ptScreenPos.x;
+    auto cursor_y = cursor_info.ptScreenPos.y;
+
+    cursor_x -= x_;
+    cursor_y -= y_;
+
+    cursor_x -= icon_info.xHotspot;
+    cursor_y -= icon_info.yHotspot;
+
+    ::DrawIconEx(memory_dc_,
+        cursor_x, cursor_y,
+        cursor_info.hCursor, 0, 0,
+        0, NULL, DI_NORMAL);
+
+    ::DeleteObject(icon_info.hbmColor);
+    ::DeleteObject(icon_info.hbmMask);
 }
